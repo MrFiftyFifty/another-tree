@@ -10,24 +10,42 @@ const tree = mkdir('nodejs-package', [
   mkdir('node_modules', [mkdir('@babel', [mkdir('cli', [mkfile('LICENSE')])])]),
 ]);
 
-// Функция для преобразования дерева в JSON
-const treeToJson = (node) => {
-  if (node.type === 'file') {
-    return {
-      type: 'file',
-      name: node.name,
-    };
-  }
+// Выводим дерево в формате JSON
+console.log(JSON.stringify(tree, null, 2));
 
-  return {
-    type: 'directory',
-    name: node.name,
-    children: node.children.map(treeToJson),
-  };
+// Реализовать функции подсчета:
+// 1. Всех узлов и листьев дерева
+const countNodesAndLeaves = (node) => {
+  if (node.type === 'file') {
+    return 1;
+  }
+  return 1 + node.children.reduce((acc, child) => acc + countNodesAndLeaves(child), 0);
 };
 
-// Преобразуем дерево в JSON
-const treeJson = treeToJson(tree);
+// 2. Только директорий
+const countDirectories = (node) => {
+  if (node.type === 'file') {
+    return 0;
+  }
+  return 1 + node.children.reduce((acc, child) => acc + countDirectories(child), 0);
+};
 
-// Выводим дерево в формате JSON
-console.log(JSON.stringify(treeJson, null, 2));
+// 3. Только файлов
+const countFiles = (node) => {
+  if (node.type === 'file') {
+    return 1;
+  }
+  return node.children.reduce((acc, child) => acc + countFiles(child), 0);
+};
+
+// Подсчитываем узлы и листья
+const totalNodesAndLeaves = countNodesAndLeaves(tree);
+console.log(`Total nodes and leaves: ${totalNodesAndLeaves}`);
+
+// Подсчитываем только директории
+const totalDirectories = countDirectories(tree);
+console.log(`Total directories: ${totalDirectories}`);
+
+// Подсчитываем только файлы
+const totalFiles = countFiles(tree);
+console.log(`Total files: ${totalFiles}`);
