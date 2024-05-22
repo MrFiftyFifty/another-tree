@@ -49,3 +49,15 @@ console.log(`Total directories: ${totalDirectories}`);
 // Подсчитываем только файлы
 const totalFiles = countFiles(tree);
 console.log(`Total files: ${totalFiles}`);
+
+// Функция для вывода имени директории и количества файлов в ней
+const printDirectoryFileCounts = (node, path = '') => {
+  if (node.type === 'directory') {
+    const fileCount = node.children.filter((child) => child.type === 'file').length;
+    console.log(`${path}${node.name}: ${fileCount}`);
+    node.children.forEach((child) => printDirectoryFileCounts(child, `${path}${node.name}/`));
+  }
+};
+
+// Выводим имя директории и количество файлов в ней
+printDirectoryFileCounts(tree);
